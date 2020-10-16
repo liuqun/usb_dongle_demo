@@ -1,0 +1,6 @@
+g_mutex
+main
+*.[o]
+*.bak
+*.swp
+~*
