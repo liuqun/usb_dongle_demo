@@ -7,9 +7,9 @@ typedef HANDLE			DEVHANDLE;
 typedef HANDLE			HAPPLICATION;
 typedef HANDLE			HCONTAINER;
 
-#ifndef _WINDOWS
+#if defined(__GNUC__)
 #define PACKED_ST(st) __attribute__((packed, aligned(1))) st
-#else
+#elif defined(_MSC_VER)
 #pragma pack(push, skf, 1)
 #define PACKED_ST(st) st
 #endif
