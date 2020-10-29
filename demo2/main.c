@@ -14,8 +14,13 @@
 #define MAX_PATH PATH_MAX
 #else
 #include <windows.h>
+#include <tchar.h>
 #endif
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+
 
 PSKF_FUNCLIST FunctionList;
 
@@ -26,27 +31,43 @@ int load_library()
     char  path[MAX_PATH] = {0};
 
 #ifdef _WIN32
-    P_SKF_GetFuncList GetFunction = NULL;
-    GetCurrentDirectory(MAX_PATH, path);
-    strcat_s(path, MAX_PATH-10, "\\SKF.dll");
-    printf("Load Dll %s\n", path);
-    lib_handle = LoadLibrary(path);
+    P_SKF_GetFuncList get_func_list = NULL;
+    TCHAR szUnicodePath[MAX_PATH+16];
+    const TCHAR *szDllFileName = _T("SKF_usb_ms_x86_64_19.1128_with_log.dll");
+
+#if defined(UNICODE)
+    _tprintf(_T("(Note: Unicode mode for Visual Studio C/C++ compiler is enabled)\n"));
+#endif
+    (void)path;
+    GetCurrentDirectory(MAX_PATH, szUnicodePath);
+    _tcscat_s(szUnicodePath, MAX_PATH, _T("\\..\\demo2\\"));
+#if !defined(_M_AMD64)
+    {
+        szDllFileName = _T("SKF_usb_ms_i686_19.1128_with_log.dll");
+    }
+#endif
+    _tcscat_s(szUnicodePath, MAX_PATH, szDllFileName);
+    _tprintf(_T("Load Dll %s\n"), szUnicodePath);
+    lib_handle = LoadLibrary((void*)szUnicodePath);
     if (lib_handle==NULL)
     {
+        char szTmp[512];
         ret = GetLastError();
         printf("Load Dll Fail:%d\n", ret);
+        strerror_s(szTmp, 256, ret);
+        printf("%s\n", szTmp);
         return ret;
     }
     else
     {
-        GetFunction = (P_SKF_GetFuncList)GetProcAddress(lib_handle, "SKF_GetFuncList");
-        if (GetFunction == NULL)
+        get_func_list = (P_SKF_GetFuncList)GetProcAddress(lib_handle, "SKF_GetFuncList");
+        if (get_func_list == NULL)
         {
             ret = GetLastError();
             return ret;
         }
         printf("Load Dll OK\n");
-        ret = GetFunction(&FunctionList);
+        ret = get_func_list(&FunctionList);
         if (ret) {
             fprintf(stderr, "SKF_GetFuncList() failed: ERROR=%#x\n", ret);
             return ret;
