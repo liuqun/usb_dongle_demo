@@ -221,7 +221,7 @@ typedef struct init_param_st
 #define GENERATE_KEY_BIT_2048		0x08000000       
 #define GENERATE_KEY_BIT_MASK		0x0FF00000
 
-#if defined(_WINDOWS)
+#if defined(_MSC_VER)
 #pragma pack(pop, skf) 
 #endif
 
