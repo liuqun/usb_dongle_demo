@@ -1,0 +1,20 @@
+# 忽略文本编辑器备份文件
+*.bak
+*.swp
+*.tmp
+*~
+~*
+# 忽略Visual Studio编译器、Qt Creator以及CMake工具输出的文件
+*.vs
+*.vcxproj.filters
+*.vcxproj.user
+*.pro.user
+CMakeLists.txt.user
+*.exe
+Debug
+Release
+build-*-Debug
+build-*-Release
+
+# 忽略download目录下的临时文件
+download
