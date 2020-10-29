@@ -4,6 +4,14 @@
 #ifndef _WIN32
 #include <dlfcn.h>
 #include <unistd.h>
+#if !defined(PATH_MAX)
+#include <limits.h>
+#  if !defined(_POSIX_C_SOURCE)
+#    warning "_POSIX_C_SOURCE is disabled! But we need it to get the value of PATH_MAX"
+#    define PATH_MAX 260
+#  endif
+#endif
+#define MAX_PATH PATH_MAX
 #else
 #include <windows.h>
 #endif
